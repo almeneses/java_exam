@@ -1,0 +1,4 @@
+- update question's state for everyone when selecting, answering, dismissing a question.
+- finishing an exam (either by pressing abutton in the server or the time is up).
+- create a report of the examn once finished.
+- save the exam's result in a file.
