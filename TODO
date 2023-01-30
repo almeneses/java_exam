@@ -1,5 +1,5 @@
-- clients should not share state with server, it should ask the server for all data.
-- update question's state for everyone when selecting, answering, dismissing a question.
+- clients should not share state with server, it should ask the server for all data. (done)
+- update question's state for everyone when selecting, answering, dismissing a question. (done)
 - finishing an exam (either by pressing abutton in the server or the time is up).
 - create a report of the examn once finished.
 - save the exam's result in a file.

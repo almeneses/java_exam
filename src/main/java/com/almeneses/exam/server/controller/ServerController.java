@@ -21,13 +21,13 @@ import com.almeneses.exam.utils.TimeUtils;
 
 public class ServerController {
 
-    private ServerSocket serverSocket;
+    private final ServerSocket serverSocket;
 
-    private List<Question> questions;
-    private List<ClientThread> clients;
-    private int examTime;
+    private final List<Question> questions;
+    private final List<ClientThread> clients;
+    private final int examTime;
     private boolean hasExamStarted;
-    private ServerUI serverUI;
+    private final ServerUI serverUI;
 
     public ServerController(ServerSocket serverSocket, ServerUI serverUI) {
         this.serverSocket = serverSocket;
@@ -54,12 +54,11 @@ public class ServerController {
                 String questionNumber = statementSplit[0];
                 String statement = statementSplit[1];
 
-                questions.add(new Question(questionNumber, statement, options, answer));
+                this.questions.add(new Question(questionNumber, statement, options, answer));
 
                 line = reader.readLine();
             }
 
-            System.out.println(questions.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,14 +79,18 @@ public class ServerController {
         }
     }
 
-    public void startTest() {
+    public void startExam() {
         try {
             this.hasExamStarted = true;
-            Message message = new Message(MessageType.EXAM_START, questions);
+            List<String> examQuestions = new ArrayList<>();
 
-            for (ClientThread client : clients) {
-                client.sendMessage(message);
+            for (Question question : questions) {
+                examQuestions.add(question.getNumber());
             }
+
+            Message message = new Message(MessageType.EXAM_START, examQuestions);
+            sendToAll(message);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,41 +100,37 @@ public class ServerController {
     }
 
     public void startCounter() {
-        new Thread(new Runnable() {
+        new Thread(() -> {
+            try {
+                int examTimeSeconds = examTime * 60;
 
-            @Override
-            public void run() {
-                try {
-                    int examTimeSeconds = examTime * 60;
+                while (examTimeSeconds > 0) {
+                    examTimeSeconds--;
+                    Message timeMessage = new Message(MessageType.TIME_UPDATE, examTimeSeconds);
+                    sendToAll(timeMessage);
 
-                    while (examTimeSeconds > 0) {
-                        Message timeMessage = new Message(MessageType.TIME_UPDATE, examTimeSeconds);
-
-                        for (ClientThread client : clients) {
-                            client.sendMessage(timeMessage);
-                        }
-
-                        examTimeSeconds--;
-                        serverUI.getRemainingTimeValueLabel().setText(TimeUtils.toClockFormat(examTimeSeconds));
-                        Thread.sleep(1000);
-                    }
-                } catch (InterruptedException e) {
-
-                    e.printStackTrace();
+                    serverUI.getRemainingTimeValueLabel().setText(TimeUtils.toClockFormat(examTimeSeconds));
+                    Thread.sleep(1000);
                 }
+            } catch (InterruptedException e) {
 
+                e.printStackTrace();
             }
-
         }).start();
-
     }
 
     public void sendInitialMessage(ClientThread client) {
         Message message = new Message();
 
         if (this.hasExamStarted) {
+            List<String> examQuestions = new ArrayList<>();
+
+            for (Question question : this.questions) {
+                examQuestions.add(question.getNumber());
+            }
+
             message.setType(MessageType.EXAM_START);
-            message.setContent(questions);
+            message.setContent(examQuestions);
         } else {
             message.setType(MessageType.EXAM_WAIT);
         }
@@ -155,9 +154,15 @@ public class ServerController {
         }
     }
 
+    public void sendToAll(Message message) {
+        for (ClientThread client : clients) {
+            client.sendMessage(message);
+        }
+    }
+
     public void initHandlers() {
         serverUI.getStartExamBtn().addActionListener(event -> {
-            startTest();
+            startExam();
             startCounter();
         });
         serverUI.getLoadExamBtn().addActionListener(event -> loadExam());
@@ -166,35 +171,29 @@ public class ServerController {
     public void initValues() {
         serverUI.getExamStatusValueLabel().setForeground(Color.RED);
         serverUI.getExamStatusValueLabel().setText("Exam not loaded");
-
-        serverUI.getRemainingTimeValueLabel().setText(String.valueOf(examTime) + " mins.");
+        serverUI.getRemainingTimeValueLabel().setText(examTime + " mins.");
     }
 
     public void initServer() {
-        new Thread(new Runnable() {
+        new Thread(() -> {
+            try {
+                while (serverSocket != null && !serverSocket.isClosed()) {
+                    Socket socket = serverSocket.accept();
 
-            @Override
-            public void run() {
-                try {
-                    while (serverSocket != null && !serverSocket.isClosed()) {
-                        Socket socket = serverSocket.accept();
+                    ClientThread newClient = new ClientThread(socket, questions, clients);
+                    clients.add(newClient);
 
-                        ClientThread nuevoCliente = new ClientThread(socket, questions, clients);
-                        clients.add(nuevoCliente);
+                    Thread hilo = new Thread(newClient);
+                    hilo.start();
 
-                        Thread hilo = new Thread(nuevoCliente);
-                        hilo.start();
+                    serverUI.getConnectedTextArea().append("Nuevo cliente conectado\n");
 
-                        serverUI.getConnectedTextArea().append("Nuevo cliente conectado\n");
+                    sendInitialMessage(newClient);
 
-                        sendInitialMessage(nuevoCliente);
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
         }).start();
 
     }

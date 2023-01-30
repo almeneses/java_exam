@@ -15,6 +15,7 @@ import com.almeneses.exam.client.ui.ClientUI;
 import com.almeneses.exam.models.Message;
 import com.almeneses.exam.models.MessageType;
 import com.almeneses.exam.models.Question;
+import com.almeneses.exam.models.QuestionStatus;
 import com.almeneses.exam.utils.TimeUtils;
 
 public class ClientController {
@@ -22,26 +23,25 @@ public class ClientController {
     private Socket socket;
     private ObjectOutputStream outStream;
     private ObjectInputStream inStream;
-    private String nombreCliente;
-    private List<Question> preguntas;
+    private String clientName;
     private ClientUI clientUI;
-    private Question preguntaActual;
+    private String currentQuestion;
 
     public ClientController(Socket socket, ClientUI clientUI) {
         try {
             this.socket = socket;
             this.clientUI = clientUI;
-            this.nombreCliente = "Cliente - " + LocalDateTime.now().toString();
+            this.clientName = "Client - " + LocalDateTime.now();
             this.outStream = new ObjectOutputStream(socket.getOutputStream());
             this.inStream = new ObjectInputStream(socket.getInputStream());
             this.clientUI.getGeneralEditorPane().setContentType("text/html");
-            this.preguntaActual = null;
+            this.currentQuestion = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void enviarMensaje(Message mensaje) {
+    public void sendMessage(Message mensaje) {
         try {
             this.outStream.reset();
             this.outStream.writeObject(mensaje);
@@ -52,139 +52,115 @@ public class ClientController {
         }
     }
 
-    public void recibirMensajes() {
-        new Thread(new Runnable() {
+    public void receiveMessages() {
+        new Thread(() -> {
+            try {
 
-            @Override
-            public void run() {
-                try {
+                while (socket.isConnected()) {
 
-                    while (socket.isConnected()) {
+                    Message mensajeDelServer = (Message) inStream.readObject();
+                    processMessage(mensajeDelServer);
 
-                        Message mensajeDelServer = (Message) inStream.readObject();
-                        procesarMensaje(mensajeDelServer);
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
         }).start();
     }
 
-    public void iniciarExamen(Message mensaje) {
-        this.preguntas = (ArrayList) mensaje.getContent();
-        clientUI.getQuestionsComboBox().addItem(null);
+    public void startExam(Message mensaje) {
+        List<String> questions = (ArrayList) mensaje.getContent();
 
-        for (Question pregunta : preguntas) {
-            clientUI.getQuestionsComboBox().addItem(pregunta.getNumber());
+        for (String questionNumber : questions) {
+            clientUI.getQuestionsComboBox().addItem(questionNumber);
         }
 
         this.clientUI.getGeneralEditorPane().setText(null);
-        this.clientUI.getGeneralEditorPane().setText("<h2><strong>Examen iniciado</strong></h2>\n");
+        this.clientUI.getGeneralEditorPane().setText("<h2><strong>The exam has started!</strong></h2>\n");
     }
 
-    public void actualizarPregunta(Message mensaje) {
-        Question preguntaServer = (Question) mensaje.getContent();
-        Question preguntaActualizar = buscarPregunta(preguntaServer.getNumber());
-        boolean actualEqualsServerPregunta = this.preguntaActual != null && this.preguntaActual.getNumber()
-                .equals(preguntaServer.getNumber());
-
-        if (preguntaActualizar != null) {
-            preguntaActualizar.replaceValuesFrom(preguntaServer);
-        }
-
-        if (this.preguntaActual != null && actualEqualsServerPregunta) {
-            this.preguntaActual.replaceValuesFrom(preguntaServer);
-        }
-
-    }
-
-    public void esperarExamen() {
+    public void waitExam() {
         clientUI.getGeneralEditorPane().setText(null);
-        clientUI.getGeneralEditorPane().setText("<h2><strong> El examen iniciará en un momento... </strong></h2>");
+        clientUI.getGeneralEditorPane().setText("<h2><strong> The exam will start in just a moment...</strong></h2>");
     }
 
-    public void actualizarTiempo(Message mensaje) {
+    public void updateTime(Message mensaje) {
         int time = (int) mensaje.getContent();
         clientUI.getRemainingTimeValueLabel().setText(TimeUtils.toClockFormat(time));
     }
 
-    public void procesarMensaje(Message mensaje) {
-        System.out.println(mensaje.getType().name());
-        switch (mensaje.getType()) {
-            case EXAM_WAIT:
-                esperarExamen();
+    public void processMessage(Message message) {
+        System.out.println(message.getType().name());
+        switch (message.getType()) {
+            case EXAM_WAIT -> waitExam();
+            case EXAM_START -> startExam(message);
+            case QUESTION_PICK -> processQuestionPick(message);
+            case TIME_UPDATE -> updateTime(message);
+            default -> {
+            }
+        }
+    }
+
+    public void processQuestionPick(Message message) {
+        Question question = (Question) message.getContent();
+
+        if (question.getStatus() != QuestionStatus.FREE) {
+            showQuestionNotFreeMessage(question.getStatus());
+            return;
+        }
+        showQuestion(question);
+        showQuestionOptions(question);
+    }
+
+    public void showQuestionNotFreeMessage(QuestionStatus questionStatus) {
+        String template = "<h2><strong class='color: red;'>%1$s</strong></h2>";
+        String formattedMessage = "";
+
+        switch (questionStatus) {
+            case TAKEN:
+                formattedMessage = String.format(template, "This question has been taken, pick another one");
                 break;
-            case EXAM_START:
-                iniciarExamen(mensaje);
-                break;
-            case QUESTION_UPDATE:
-                actualizarPregunta(mensaje);
-                System.out.println(this.preguntas);
-                break;
-            case TIME_UPDATE:
-                actualizarTiempo(mensaje);
-                break;
+            case ANSWERED:
+                formattedMessage = String.format(template, "Sorry! This question has already been answered.");
             default:
                 break;
         }
+
+        clientUI.getGeneralEditorPane().setText(formattedMessage);
     }
 
-    public Question buscarPregunta(String numPregunta) {
-        for (Question pregunta : preguntas) {
-            if (pregunta.getNumber().equals(numPregunta)) {
-                return pregunta;
-            }
-        }
-
-        return null;
+    public void showQuestion(Question question) {
+        String formattedText = String.format("<h3><strong>%1$s</strong></h3>", question.getStatement());
+        clientUI.getGeneralEditorPane().setText(formattedText);
     }
 
-    public void seleccionarPregunta() {
-        String seleccion = (String) clientUI.getQuestionsComboBox().getSelectedItem();
-        Question preguntaSeleccionada = buscarPregunta(seleccion);
-
-        if (this.preguntaActual != null) {
-            if (this.preguntaActual.equals(preguntaSeleccionada)) {
-                return;
-            }
-            this.preguntaActual.setStatus("Libre");
-            enviarMensaje(new Message(MessageType.QUESTION_UPDATE, preguntaActual));
-        }
-
-        if (preguntaSeleccionada != null && !preguntaSeleccionada.getStatus().equals("Libre")) {
-            clientUI.getGeneralEditorPane().setText(
-                    "<h2><strong class='color: red;'>"
-                            + "Esta pregunta no está disponible, seleccione otra</strong></h2>");
-            return;
-        }
-
-        this.preguntaActual = preguntaSeleccionada;
-        this.preguntaActual.setStatus("Ocupada");
-
-        clientUI.getGeneralEditorPane().setText("<h3>" + preguntaActual.getStatement() + "</h3>\n");
+    public void showQuestionOptions(Question question) {
 
         ButtonGroup buttonGroup = new ButtonGroup();
 
-        for (String opcion : preguntaActual.getOptions()) {
-            JRadioButton radioButton = new JRadioButton(opcion);
+        for (String option : question.getOptions()) {
+            JRadioButton radioButton = new JRadioButton(option);
             buttonGroup.add(radioButton);
             clientUI.getOptionsPanel().add(radioButton);
         }
+    }
 
-        enviarMensaje(new Message(MessageType.QUESTION_UPDATE, preguntaSeleccionada));
+    public void pickQuestion() {
+        String selected = (String) clientUI.getQuestionsComboBox().getSelectedItem();
 
+        if(selected != null  && !selected.equals(this.currentQuestion)) {
+            this.currentQuestion = selected;
+            sendMessage(new Message(MessageType.QUESTION_PICK, selected));
+        }
     }
 
     public void enviarPregunta() {
-        Message mensaje = new Message(MessageType.ANSWER, preguntaActual);
-        enviarMensaje(mensaje);
+        Message mensaje = new Message(MessageType.QUESTION_ANSWER, currentQuestion);
+        sendMessage(mensaje);
     }
 
     public void initHandlers() {
-        clientUI.getPickQuestionBtn().addActionListener(event -> seleccionarPregunta());
+        clientUI.getPickQuestionBtn().addActionListener(event -> pickQuestion());
         clientUI.getSendAnswerBtn().addActionListener(event -> enviarPregunta());
     }
 
@@ -193,40 +169,7 @@ public class ClientController {
         clientUI.getGeneralEditorPane().setEditable(false);
         initHandlers();
         clientUI.setVisible(true);
-        recibirMensajes();
+        receiveMessages();
 
     }
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
-
-    public ObjectOutputStream getOutStream() {
-        return outStream;
-    }
-
-    public void setOutStream(ObjectOutputStream outStream) {
-        this.outStream = outStream;
-    }
-
-    public ObjectInputStream getInStream() {
-        return inStream;
-    }
-
-    public void setInStream(ObjectInputStream inStream) {
-        this.inStream = inStream;
-    }
-
-    public String getNombreCliente() {
-        return nombreCliente;
-    }
-
-    public void setNombreCliente(String username) {
-        this.nombreCliente = username;
-    }
-
 }

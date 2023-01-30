@@ -9,6 +9,7 @@ import java.util.List;
 import com.almeneses.exam.models.Message;
 import com.almeneses.exam.models.MessageType;
 import com.almeneses.exam.models.Question;
+import com.almeneses.exam.models.QuestionStatus;
 
 public class ClientThread implements Runnable {
 
@@ -16,6 +17,7 @@ public class ClientThread implements Runnable {
 
     private List<Question> questions;
     private List<ClientThread> clients;
+    private Question currentQuestion;
     private ObjectOutputStream outStream;
     private ObjectInputStream inStream;
     private String clientName;
@@ -27,6 +29,7 @@ public class ClientThread implements Runnable {
             this.clients = clients;
             this.outStream = new ObjectOutputStream(socket.getOutputStream());
             this.inStream = new ObjectInputStream(socket.getInputStream());
+            this.currentQuestion = null;
         } catch (Exception e) {
             try {
                 this.socket.close();
@@ -52,53 +55,40 @@ public class ClientThread implements Runnable {
 
     public void processMessage(Message message) {
         switch (message.getType()) {
-            case ANSWER:
-                processResponse(message);
-                break;
-            case QUESTION_UPDATE:
-                updateQuestion(message);
-                System.out.println(questions);
-                break;
-            default:
-                break;
+            case QUESTION_ANSWER -> processResponse(message);
+            case QUESTION_PICK -> {
+                pickQuestion(message);
+                sendMessage(new Message(MessageType.QUESTION_PICK, this.currentQuestion));
+                this.currentQuestion.setStatus(QuestionStatus.TAKEN);
+            }
+            default -> {
+            }
         }
 
     }
 
-    public Question qualifyQuestion(Question question) {
+    public void qualifyQuestion(Question question) {
         boolean isCorrect = question.getCorrectAnswer().equals(question.getAnswerGiven());
 
         question.setCorrect(isCorrect);
         question.setAnsweredBy(this.clientName);
-        question.setStatus("Answered");
-
-        return question;
+        question.setStatus(QuestionStatus.ANSWERED);
     }
 
     public void processResponse(Message message) {
         Question answerQuestion = (Question) message.getContent();
-        answerQuestion = qualifyQuestion(answerQuestion);
-
+        qualifyQuestion(answerQuestion);
     }
 
-    public void updateQuestion(Message message) {
-        Question question = (Question) message.getContent();
-        Question updateQuestion = findQuestion(question.getNumber());
+    public void pickQuestion(Message message) {
+        String question = (String) message.getContent();
+        Question updateQuestion = findQuestion(question);
 
-        if (updateQuestion != null) {
-            updateQuestion.replaceValuesFrom(question);
+        if (this.currentQuestion != null && !this.currentQuestion.equals(updateQuestion)) {
+            this.currentQuestion.setStatus(QuestionStatus.FREE);
         }
 
-        notifyCustomers(message);
-    }
-
-    public void notifyCustomers(Message message) {
-        for (ClientThread client : clients) {
-            if (!client.getSocket().equals(this.socket)) {
-                Message messageF = new Message(message.getType(), message.getContent());
-                client.sendMessage(messageF);
-            }
-        }
+        this.currentQuestion = updateQuestion;
     }
 
     public Question findQuestion(String numQuestion) {
@@ -132,33 +122,4 @@ public class ClientThread implements Runnable {
         receiveMessage();
         sendMessage(new Message(MessageType.EXAM_WAIT, "The exam will start shortly..."));
     }
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public List<Question> getQuestions() {
-        return questions;
-    }
-
-    public List<ClientThread> getClients() {
-        return clients;
-    }
-
-    public ObjectOutputStream getOutStream() {
-        return outStream;
-    }
-
-    public ObjectInputStream getInStream() {
-        return inStream;
-    }
-
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
 }
