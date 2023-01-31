@@ -36,6 +36,7 @@ public class ClientUI extends javax.swing.JFrame {
         pickQuestionBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         generalEditorPane = new javax.swing.JEditorPane();
+        optionsButtonGroup = new javax.swing.ButtonGroup();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -207,101 +208,33 @@ public class ClientUI extends javax.swing.JFrame {
     private javax.swing.JLabel remainingTimeValueLabel;
     private javax.swing.JButton sendAnswerBtn;
 
-    // End of variables declaration//GEN-END:variables
-    public javax.swing.JLabel getExamStatusLabel() {
-        return examStatusLabel;
-    }
-
-    public void setExamStatusLabel(javax.swing.JLabel examStatusLabel) {
-        this.examStatusLabel = examStatusLabel;
-    }
-
-    public javax.swing.JLabel getExamStatusValueLabel() {
-        return examStatusValueLabel;
-    }
-
-    public void setExamStatusValueLabel(javax.swing.JLabel examStatusValueLabel) {
-        this.examStatusValueLabel = examStatusValueLabel;
-    }
-
-    public javax.swing.JPanel getjPanel1() {
-        return jPanel1;
-    }
-
-    public void setjPanel1(javax.swing.JPanel jPanel1) {
-        this.jPanel1 = jPanel1;
-    }
-
-    public javax.swing.JPanel getjPanel2() {
-        return jPanel2;
-    }
-
-    public void setjPanel2(javax.swing.JPanel jPanel2) {
-        this.jPanel2 = jPanel2;
-    }
-
-    public javax.swing.JScrollPane getjScrollPane1() {
-        return jScrollPane1;
-    }
-
-    public void setjScrollPane1(javax.swing.JScrollPane jScrollPane1) {
-        this.jScrollPane1 = jScrollPane1;
-    }
+    private javax.swing.ButtonGroup optionsButtonGroup;
 
     public javax.swing.JPanel getOptionsPanel() {
         return optionsPanel;
-    }
-
-    public void setOptionsPanel(javax.swing.JPanel optionsPanel) {
-        this.optionsPanel = optionsPanel;
     }
 
     public javax.swing.JButton getPickQuestionBtn() {
         return pickQuestionBtn;
     }
 
-    public void setPickQuestionBtn(javax.swing.JButton pickQuestionBtn) {
-        this.pickQuestionBtn = pickQuestionBtn;
-    }
-
     public javax.swing.JComboBox<String> getQuestionsComboBox() {
         return questionsComboBox;
-    }
-
-    public void setQuestionsComboBox(javax.swing.JComboBox<String> questionsComboBox) {
-        this.questionsComboBox = questionsComboBox;
-    }
-
-    public javax.swing.JLabel getRemainingTimeLabel() {
-        return remainingTimeLabel;
-    }
-
-    public void setRemainingTimeLabel(javax.swing.JLabel remainingTimeLabel) {
-        this.remainingTimeLabel = remainingTimeLabel;
     }
 
     public javax.swing.JLabel getRemainingTimeValueLabel() {
         return remainingTimeValueLabel;
     }
 
-    public void setRemainingTimeValueLabel(javax.swing.JLabel remainingTimeValueLabel) {
-        this.remainingTimeValueLabel = remainingTimeValueLabel;
-    }
-
     public javax.swing.JButton getSendAnswerBtn() {
         return sendAnswerBtn;
-    }
-
-    public void setSendAnswerBtn(javax.swing.JButton sendAnswerBtn) {
-        this.sendAnswerBtn = sendAnswerBtn;
     }
 
     public javax.swing.JEditorPane getGeneralEditorPane() {
         return generalEditorPane;
     }
 
-    public void setGeneralEditorPane(javax.swing.JEditorPane generalEditorPane) {
-        this.generalEditorPane = generalEditorPane;
-    }
+    public javax.swing.ButtonGroup getOptionsButtonGroup() { return optionsButtonGroup; }
+
 
 }

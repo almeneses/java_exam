@@ -33,7 +33,7 @@ public class ServerController {
         this.serverSocket = serverSocket;
         this.clients = new ArrayList<>();
         this.questions = new ArrayList<>();
-        this.examTime = 45;
+        this.examTime = 1;
         this.hasExamStarted = false;
         this.serverUI = serverUI;
     }
@@ -112,11 +112,20 @@ public class ServerController {
                     serverUI.getRemainingTimeValueLabel().setText(TimeUtils.toClockFormat(examTimeSeconds));
                     Thread.sleep(1000);
                 }
+                finishExam();
             } catch (InterruptedException e) {
 
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    public void finishExam(){
+        serverUI.getExamStatusValueLabel().setForeground(new Color(177, 70, 5));
+        serverUI.getExamStatusValueLabel().setText("Exam finished");
+
+        Message message = new Message(MessageType.EXAM_END, null);
+        sendToAll(message);
     }
 
     public void sendInitialMessage(ClientThread client) {

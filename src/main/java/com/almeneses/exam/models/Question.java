@@ -9,7 +9,7 @@ public class Question implements Serializable {
     private final String answerGiven;
     private String correctAnswer;
     private String answeredBy;
-    private String number;
+    private final String number;
     private boolean isCorrect;
 
     public Question(String number, String statement, String[] options, String answer) {

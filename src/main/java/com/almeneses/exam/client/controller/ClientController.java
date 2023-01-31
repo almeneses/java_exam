@@ -58,8 +58,8 @@ public class ClientController {
 
                 while (socket.isConnected()) {
 
-                    Message mensajeDelServer = (Message) inStream.readObject();
-                    processMessage(mensajeDelServer);
+                    Message serverMessage = (Message) inStream.readObject();
+                    processMessage(serverMessage);
 
                 }
             } catch (Exception e) {
@@ -77,15 +77,28 @@ public class ClientController {
 
         this.clientUI.getGeneralEditorPane().setText(null);
         this.clientUI.getGeneralEditorPane().setText("<h2><strong>The exam has started!</strong></h2>\n");
+        enableControls(true);
     }
 
     public void waitExam() {
-        clientUI.getGeneralEditorPane().setText(null);
-        clientUI.getGeneralEditorPane().setText("<h2><strong> The exam will start in just a moment...</strong></h2>");
+        clientUI.getGeneralEditorPane().setText("<h2><strong>The exam will start in just a moment...</strong></h2>");
+        enableControls(false);
     }
 
-    public void updateTime(Message mensaje) {
-        int time = (int) mensaje.getContent();
+    public void finishExam(){
+        clientUI.getGeneralEditorPane().setText("<h2 style='color: red;'><strong>Exam has ended!</strong></h2>");
+        enableControls(false);
+    }
+
+    public void enableControls(boolean isEnabled){
+        clientUI.getSendAnswerBtn().setEnabled(isEnabled);
+        clientUI.getQuestionsComboBox().setEnabled(isEnabled);
+        clientUI.getOptionsPanel().setEnabled(isEnabled);
+        clientUI.getPickQuestionBtn().setEnabled(isEnabled);
+    }
+
+    public void updateTime(Message message) {
+        int time = (int) message.getContent();
         clientUI.getRemainingTimeValueLabel().setText(TimeUtils.toClockFormat(time));
     }
 
@@ -94,6 +107,7 @@ public class ClientController {
         switch (message.getType()) {
             case EXAM_WAIT -> waitExam();
             case EXAM_START -> startExam(message);
+            case EXAM_END -> finishExam();
             case QUESTION_PICK -> processQuestionPick(message);
             case TIME_UPDATE -> updateTime(message);
             default -> {
@@ -117,13 +131,9 @@ public class ClientController {
         String formattedMessage = "";
 
         switch (questionStatus) {
-            case TAKEN:
-                formattedMessage = String.format(template, "This question has been taken, pick another one");
-                break;
-            case ANSWERED:
-                formattedMessage = String.format(template, "Sorry! This question has already been answered.");
-            default:
-                break;
+            case TAKEN -> formattedMessage = String.format(template, "This question has been taken, pick another one");
+            case ANSWERED -> formattedMessage = String.format(template, "Sorry! This question has already been answered.");
+            default -> {}
         }
 
         clientUI.getGeneralEditorPane().setText(formattedMessage);
@@ -135,12 +145,10 @@ public class ClientController {
     }
 
     public void showQuestionOptions(Question question) {
-
-        ButtonGroup buttonGroup = new ButtonGroup();
-
         for (String option : question.getOptions()) {
             JRadioButton radioButton = new JRadioButton(option);
-            buttonGroup.add(radioButton);
+            radioButton.setActionCommand(option);
+            clientUI.getOptionsButtonGroup().add(radioButton);
             clientUI.getOptionsPanel().add(radioButton);
         }
     }
@@ -154,14 +162,15 @@ public class ClientController {
         }
     }
 
-    public void enviarPregunta() {
-        Message mensaje = new Message(MessageType.QUESTION_ANSWER, currentQuestion);
-        sendMessage(mensaje);
+    public void sendAnswer() {
+        String answer = clientUI.getOptionsButtonGroup().getSelection().getActionCommand();
+        Message message = new Message(MessageType.QUESTION_ANSWER, answer);
+        sendMessage(message);
     }
 
     public void initHandlers() {
         clientUI.getPickQuestionBtn().addActionListener(event -> pickQuestion());
-        clientUI.getSendAnswerBtn().addActionListener(event -> enviarPregunta());
+        clientUI.getSendAnswerBtn().addActionListener(event -> sendAnswer());
     }
 
     public void init() {

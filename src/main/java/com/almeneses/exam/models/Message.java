@@ -7,9 +7,9 @@ public class Message implements Serializable {
     private MessageType type;
     private Object content;
 
-    public Message(MessageType tipo, Object contenido) {
+    public Message(MessageType tipo, Object content) {
         this.type = tipo;
-        this.content = contenido;
+        this.content = content;
     }
 
     public Message() {
@@ -19,16 +19,16 @@ public class Message implements Serializable {
         return type;
     }
 
-    public void setType(MessageType tipo) {
-        this.type = tipo;
+    public void setType(MessageType type) {
+        this.type = type;
     }
 
     public Object getContent() {
         return content;
     }
 
-    public void setContent(Object contenido) {
-        this.content = contenido;
+    public void setContent(Object content) {
+        this.content = content;
     }
 
 }
