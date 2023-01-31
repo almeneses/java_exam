@@ -42,25 +42,21 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
+              <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="actionsPanel" alignment="0" max="32767" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="statusPanel" max="32767" attributes="0"/>
+                      <Component id="actionsPanel" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="statusPanel" max="32767" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="generalInfoScrollPanel" pref="347" max="32767" attributes="0"/>
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Component id="connectedScrollPane" pref="169" max="32767" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace min="-2" pref="80" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="generalInfoScrollPanel" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Component id="connectedScrollPane" min="-2" pref="160" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -68,16 +64,16 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="69" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="actionsPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="connectedScrollPane" max="32767" attributes="0"/>
-                      <Component id="generalInfoScrollPanel" pref="244" max="32767" attributes="0"/>
+                      <Component id="generalInfoScrollPanel" pref="247" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="statusPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -92,20 +88,23 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="loadExamBtn" pref="115" max="32767" attributes="0"/>
-                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-                      <Component id="startExamBtn" pref="115" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="loadExamBtn" min="-2" pref="110" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="startExamBtn" min="-2" pref="110" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="finishExamBtn" min="-2" pref="110" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="2" attributes="0">
-                          <Component id="loadExamBtn" alignment="2" max="32767" attributes="0"/>
-                          <Component id="startExamBtn" alignment="2" pref="38" max="32767" attributes="0"/>
+                          <Component id="finishExamBtn" linkSize="1" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
+                          <Component id="startExamBtn" linkSize="1" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
+                          <Component id="loadExamBtn" linkSize="1" alignment="2" min="-2" pref="38" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -113,12 +112,6 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JButton" name="startExamBtn">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Start Exam"/>
-                <Property name="name" type="java.lang.String" value="startExamBtn" noResource="true"/>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JButton" name="loadExamBtn">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Load Exam"/>
@@ -127,6 +120,21 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadExamBtnActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="startExamBtn">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Start Exam"/>
+                <Property name="name" type="java.lang.String" value="startExamBtn" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="finishExamBtn">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="50" green="54" id="Actions.Red" palette="3" red="c7" type="palette"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Finish Exam"/>
+                <Property name="name" type="java.lang.String" value="finishExamBtn" noResource="true"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

@@ -1,11 +1,26 @@
 package com.almeneses.exam.client.ui;
 
+import javax.swing.*;
+
 /**
- *
  * @author alejo
  */
 public class ClientUI extends javax.swing.JFrame {
 
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel examStatusLabel;
+    private javax.swing.JLabel examStatusValueLabel;
+    private javax.swing.JEditorPane generalEditorPane;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel optionsPanel;
+    private javax.swing.JButton pickQuestionBtn;
+    private javax.swing.JComboBox<String> questionsComboBox;
+    private javax.swing.JLabel remainingTimeLabel;
+    private javax.swing.JLabel remainingTimeValueLabel;
+    private javax.swing.JButton sendAnswerBtn;
+    private javax.swing.ButtonGroup optionsButtonGroup;
     /**
      * Creates new form ClientUI
      */
@@ -50,14 +65,7 @@ public class ClientUI extends javax.swing.JFrame {
                         .addGap(0, 40, Short.MAX_VALUE));
 
         sendAnswerBtn.setText("Send Answer");
-        sendAnswerBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sendAnswerBtnActionPerformed(evt);
-            }
-        });
-
         examStatusLabel.setText("Exam status:");
-
         remainingTimeLabel.setText("Remaining Time:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -67,40 +75,47 @@ public class ClientUI extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, 0)
                                 .addComponent(examStatusLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(examStatusValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100,
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(examStatusValueLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        100,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(remainingTimeLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(remainingTimeValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100,
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(remainingTimeValueLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        100,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE)));
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(jPanel1Layout
-                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .createParallelGroup(
+                                                        javax.swing.GroupLayout.Alignment.BASELINE)
                                                 .addComponent(examStatusLabel)
                                                 .addComponent(examStatusValueLabel,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 17,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        17,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(jPanel1Layout
-                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .createParallelGroup(
+                                                        javax.swing.GroupLayout.Alignment.BASELINE)
                                                 .addComponent(remainingTimeLabel)
                                                 .addComponent(remainingTimeValueLabel,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 17,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        17,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap()));
 
         questionsComboBox.setModel(
                 new javax.swing.DefaultComboBoxModel<>());
-        questionsComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                questionsComboBoxActionPerformed(evt);
-            }
-        });
 
         pickQuestionBtn.setText("Select");
 
@@ -110,21 +125,32 @@ public class ClientUI extends javax.swing.JFrame {
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(questionsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 98,
+                                .addComponent(questionsComboBox,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        98,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(pickQuestionBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                .addComponent(pickQuestionBtn,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        120,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap()));
         jPanel2Layout.setVerticalGroup(
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout
+                                .createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(jPanel2Layout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(pickQuestionBtn, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(questionsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 35,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(pickQuestionBtn,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(questionsComboBox,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                35,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap()));
 
@@ -136,80 +162,85 @@ public class ClientUI extends javax.swing.JFrame {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(jPanel2,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        Short.MAX_VALUE)
                                                 .addGap(260, 260, 260))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addComponent(optionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(optionsPanel,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        Short.MAX_VALUE)
                                                 .addContainerGap())
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout
-                                                .createSequentialGroup()
-                                                .addGroup(layout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                        .addComponent(jScrollPane1,
-                                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 0,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                .addContainerGap())
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout
-                                                .createSequentialGroup()
-                                                .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(sendAnswerBtn, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                        Short.MAX_VALUE)))));
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                layout
+                                                        .createSequentialGroup()
+                                                        .addGroup(layout
+                                                                .createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                .addComponent(jScrollPane1,
+                                                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                        0,
+                                                                        Short.MAX_VALUE)
+                                                                .addComponent(jPanel1,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        Short.MAX_VALUE))
+                                                        .addContainerGap())
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                layout
+                                                        .createSequentialGroup()
+                                                        .addGap(0, 0, Short.MAX_VALUE)
+                                                        .addComponent(sendAnswerBtn,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                140,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addContainerGap(
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                Short.MAX_VALUE)))));
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(11, 11, 11)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167,
+                                .addComponent(jPanel2,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        167,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel1,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(optionsPanel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(sendAnswerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35,
+                                .addComponent(sendAnswerBtn,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        35,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE)));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void sendAnswerBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_sendAnswerBtnActionPerformed
-        // TODO add your handling code here:
-    }// GEN-LAST:event_sendAnswerBtnActionPerformed
-
-    private void questionsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_questionsComboBoxActionPerformed
-        // TODO add your handling code here:
-    }// GEN-LAST:event_questionsComboBoxActionPerformed
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel examStatusLabel;
-    private javax.swing.JLabel examStatusValueLabel;
-    private javax.swing.JEditorPane generalEditorPane;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JPanel optionsPanel;
-    private javax.swing.JButton pickQuestionBtn;
-    private javax.swing.JComboBox<String> questionsComboBox;
-    private javax.swing.JLabel remainingTimeLabel;
-    private javax.swing.JLabel remainingTimeValueLabel;
-    private javax.swing.JButton sendAnswerBtn;
-
-    private javax.swing.ButtonGroup optionsButtonGroup;
-
+    // End of variables declaration//GEN-END:variables
     public javax.swing.JPanel getOptionsPanel() {
         return optionsPanel;
     }
@@ -234,7 +265,7 @@ public class ClientUI extends javax.swing.JFrame {
         return generalEditorPane;
     }
 
-    public javax.swing.ButtonGroup getOptionsButtonGroup() { return optionsButtonGroup; }
-
-
+    public javax.swing.ButtonGroup getOptionsButtonGroup() {
+        return optionsButtonGroup;
+    }
 }

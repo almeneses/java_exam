@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 
 import com.almeneses.exam.client.ui.ClientUI;
@@ -87,6 +86,7 @@ public class ClientController {
 
     public void finishExam(){
         clientUI.getGeneralEditorPane().setText("<h2 style='color: red;'><strong>Exam has ended!</strong></h2>");
+        clientUI.getRemainingTimeValueLabel().setText(TimeUtils.toClockFormat(0));
         enableControls(false);
     }
 

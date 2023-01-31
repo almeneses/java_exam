@@ -1,6 +1,15 @@
 package com.almeneses.exam.server.controller;
 
-import java.awt.Color;
+import com.almeneses.exam.models.Message;
+import com.almeneses.exam.models.MessageType;
+import com.almeneses.exam.models.Question;
+import com.almeneses.exam.server.ClientThread;
+import com.almeneses.exam.server.ui.ServerUI;
+import com.almeneses.exam.utils.TimeUtils;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,16 +17,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import com.almeneses.exam.models.Message;
-import com.almeneses.exam.models.MessageType;
-import com.almeneses.exam.models.Question;
-import com.almeneses.exam.server.ClientThread;
-import com.almeneses.exam.server.ui.ServerUI;
-import com.almeneses.exam.utils.TimeUtils;
 
 public class ServerController {
 
@@ -28,6 +27,8 @@ public class ServerController {
     private final int examTime;
     private boolean hasExamStarted;
     private final ServerUI serverUI;
+
+    private Thread timeThread;
 
     public ServerController(ServerSocket serverSocket, ServerUI serverUI) {
         this.serverSocket = serverSocket;
@@ -100,7 +101,7 @@ public class ServerController {
     }
 
     public void startCounter() {
-        new Thread(() -> {
+        this.timeThread = new Thread(() -> {
             try {
                 int examTimeSeconds = examTime * 60;
 
@@ -117,12 +118,15 @@ public class ServerController {
 
                 e.printStackTrace();
             }
-        }).start();
+        });
+
+        this.timeThread.start();
     }
 
     public void finishExam(){
         serverUI.getExamStatusValueLabel().setForeground(new Color(177, 70, 5));
         serverUI.getExamStatusValueLabel().setText("Exam finished");
+        serverUI.getRemainingTimeValueLabel().setText(TimeUtils.toClockFormat(0));
 
         Message message = new Message(MessageType.EXAM_END, null);
         sendToAll(message);
@@ -175,6 +179,10 @@ public class ServerController {
             startCounter();
         });
         serverUI.getLoadExamBtn().addActionListener(event -> loadExam());
+        serverUI.getFinishExamBtn().addActionListener(event -> {
+            finishExam();
+            this.timeThread.interrupt();
+        });
     }
 
     public void initValues() {
