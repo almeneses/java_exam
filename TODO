@@ -1,6 +1,9 @@
 - clients should not share state with server, it should ask the server for all data. (done)
 - update question's state for everyone when selecting, answering, dismissing a question. (done)
-- finishing an exam (either by pressing abutton in the server or the time is up).
-- create a report of the examn once finished.
+- finishing an exam (either by pressing a button in the server or the time is up).
+- create a report of the exam once finished.
 - save the exam's result in a file.
 - tests.
+- allow setting the port in the server.
+- clients should be able to start without a server.
+- clients should have a button that searches for a server when clicked.
