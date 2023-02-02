@@ -1,5 +1,13 @@
 package com.almeneses.exam.client.controller;
 
+import com.almeneses.exam.client.ui.ClientUI;
+import com.almeneses.exam.models.Message;
+import com.almeneses.exam.models.MessageType;
+import com.almeneses.exam.models.Question;
+import com.almeneses.exam.models.QuestionStatus;
+import com.almeneses.exam.utils.TimeUtils;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -7,15 +15,6 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JRadioButton;
-
-import com.almeneses.exam.client.ui.ClientUI;
-import com.almeneses.exam.models.Message;
-import com.almeneses.exam.models.MessageType;
-import com.almeneses.exam.models.Question;
-import com.almeneses.exam.models.QuestionStatus;
-import com.almeneses.exam.utils.TimeUtils;
 
 public class ClientController {
 
@@ -67,8 +66,8 @@ public class ClientController {
         }).start();
     }
 
-    public void startExam(Message mensaje) {
-        List<String> questions = (ArrayList) mensaje.getContent();
+    public void startExam(Message message) {
+        List<String> questions = (ArrayList) message.getContent();
 
         for (String questionNumber : questions) {
             clientUI.getQuestionsComboBox().addItem(questionNumber);
@@ -84,17 +83,16 @@ public class ClientController {
         enableControls(false);
     }
 
-    public void finishExam(){
+    public void finishExam() {
         clientUI.getGeneralEditorPane().setText("<h2 style='color: red;'><strong>Exam has ended!</strong></h2>");
         clientUI.getRemainingTimeValueLabel().setText(TimeUtils.toClockFormat(0));
         enableControls(false);
     }
 
-    public void enableControls(boolean isEnabled){
+    public void enableControls(boolean isEnabled) {
         clientUI.getSendAnswerBtn().setEnabled(isEnabled);
         clientUI.getQuestionsComboBox().setEnabled(isEnabled);
-        clientUI.getOptionsPanel().setEnabled(isEnabled);
-        clientUI.getPickQuestionBtn().setEnabled(isEnabled);
+        enableQuestionActions(isEnabled);
     }
 
     public void updateTime(Message message) {
@@ -115,6 +113,11 @@ public class ClientController {
         }
     }
 
+    public void enableQuestionActions(boolean isEnabled) {
+        clientUI.getOptionsPanel().setEnabled(isEnabled);
+        clientUI.getSendAnswerBtn().setEnabled(isEnabled);
+    }
+
     public void processQuestionPick(Message message) {
         Question question = (Question) message.getContent();
 
@@ -124,6 +127,7 @@ public class ClientController {
         }
         showQuestion(question);
         showQuestionOptions(question);
+        enableQuestionActions(true);
     }
 
     public void showQuestionNotFreeMessage(QuestionStatus questionStatus) {
@@ -132,11 +136,15 @@ public class ClientController {
 
         switch (questionStatus) {
             case TAKEN -> formattedMessage = String.format(template, "This question has been taken, pick another one");
-            case ANSWERED -> formattedMessage = String.format(template, "Sorry! This question has already been answered.");
-            default -> {}
+            case ANSWERED ->
+                    formattedMessage = String.format(template, "Sorry! This question has already been answered.");
+            default -> {
+            }
         }
 
         clientUI.getGeneralEditorPane().setText(formattedMessage);
+        enableQuestionActions(false);
+
     }
 
     public void showQuestion(Question question) {
@@ -145,8 +153,11 @@ public class ClientController {
     }
 
     public void showQuestionOptions(Question question) {
+        clientUI.getOptionsPanel().removeAll();
+
         for (String option : question.getOptions()) {
             JRadioButton radioButton = new JRadioButton(option);
+            radioButton.setBounds(10, 10, 100, 25);
             radioButton.setActionCommand(option);
             clientUI.getOptionsButtonGroup().add(radioButton);
             clientUI.getOptionsPanel().add(radioButton);
@@ -156,7 +167,7 @@ public class ClientController {
     public void pickQuestion() {
         String selected = (String) clientUI.getQuestionsComboBox().getSelectedItem();
 
-        if(selected != null  && !selected.equals(this.currentQuestion)) {
+        if (selected != null && !selected.equals(this.currentQuestion)) {
             this.currentQuestion = selected;
             sendMessage(new Message(MessageType.QUESTION_PICK, selected));
         }
@@ -166,6 +177,10 @@ public class ClientController {
         String answer = clientUI.getOptionsButtonGroup().getSelection().getActionCommand();
         Message message = new Message(MessageType.QUESTION_ANSWER, answer);
         sendMessage(message);
+
+        clientUI.getGeneralEditorPane().setText("<strong>Answer sent! pick another question</strong>");
+        enableQuestionActions(false);
+
     }
 
     public void initHandlers() {
